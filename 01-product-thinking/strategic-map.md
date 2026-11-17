@@ -1,11 +1,7 @@
-# Strategic Discovery Map
-
-> **Module 1 · Lab 1.** Repo file `01-product-thinking/strategic-map.md` — part of your submission.
-> Do the lab in the **Module 1 · Exercise 1 Guide** (linked from the Module 1 deck), then click **⬇ Download .md** — it saves as this exact file. Commit it here.
-> It's the discovery groundwork behind your `problem-hook.md`.
+# Strategic Discovery Map (Module 1)
 
 ## Responses
-
-- **Feature with no strategic answer (why is this a 12-week priority?):** _(not filled in)_
-- **Feature that looks "correct" but has zero strategic weight:** _(not filled in)_
-- **V3 vs your Step 1 baseline — what changed, and was it your PM knowledge that forced usefulness?:** _(not filled in)_
+- **Write one feature from the map that, if an engineer asked “why is this a priority for our 12-week roadmap?”, you honestly could not give a strategic answer for.:** Motivation (Specifically challenging with Friends) - Thinking this feature will need accounts, friend invites, privacy controls, that a solo logging app doesn’t need so it might affect timeline a lot in terms of execution
+- **Write one feature that looks “correct” for the app but has zero strategic weight, you have no idea if it helps the company make money or whether a single user actually asked for it.:** "Streaks and badges" - Broken streak might feel like failure, so users who miss a single day may quit the app entirely instead of picking back up which would make early drop off worse for the people we most want to keep. Also, streaks might depend on the user’s local day, so time zones, travel, daylight saving changes, and offline logging can all miscount
+- **Compare V3 to your Step 1 baseline. What changed, and is the output objectively better, did the AI get smarter, or did your added PM knowledge (JTBD, effort/impact, retention) force it to be useful?:** It's definitely better than the Step 1 baseline. The output became more detailed, structured, and actionable because the prompt included more context and specific PM concepts instead of just generating a generic list of features, the AI was guided to think more strategically about user needs, business value, and which features would actually make an impact.
+- **Key takeaway: how does this prove the PM’s role is to think while the AI’s role is to execute?:** This proves that the PMs are still the ones driving the thinking behind the product. AI can help execute ideas, generate solutions, and make things faster, but it still needs the PM to provide the right context, ask the right questions, and guide it in the right direction. At the end of the day, AI can do the execution, but the PM is still responsible for deciding what to build, why it matters, and whether the output actually makes sense for the users and the business.

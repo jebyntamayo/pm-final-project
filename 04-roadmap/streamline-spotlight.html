@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="This week's hand-picked films chosen by StreamLine curators.">
+  <meta property="og:title" content="StreamLine — Spotlight Curated Picks">
+  <meta property="og:description" content="This week's hand-picked films chosen by StreamLine curators.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <title>StreamLine — Spotlight Curated Picks</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --background: oklch(0.125 0.008 260);
+      --foreground: oklch(0.955 0.008 80);
+      --surface: oklch(0.165 0.01 260);
+      --surface-elevated: oklch(0.21 0.012 260);
+      --card: oklch(0.17 0.01 260);
+      --popover: oklch(0.19 0.012 260);
+      --spotlight: oklch(0.8 0.135 76);
+      --spotlight-foreground: oklch(0.14 0.015 60);
+      --secondary: oklch(0.23 0.012 260);
+      --muted-foreground: oklch(0.68 0.012 260);
+      --accent: oklch(0.24 0.015 260);
+      --border: oklch(1 0 0 / 11%);
+      --font-sans: "DM Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --font-display: "Instrument Serif", Georgia, "Times New Roman", serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      background: var(--background);
+      color: var(--foreground);
+      font-family: var(--font-sans);
+      -webkit-font-smoothing: antialiased;
+    }
+    button, input { font: inherit; }
+    button { color: inherit; }
+    button:focus-visible, input:focus-visible {
+      outline: 2px solid var(--spotlight);
+      outline-offset: 3px;
+    }
+    button:disabled { cursor: default; }
+    .icon { width: 16px; height: 16px; flex: 0 0 auto; }
+    .icon-small { width: 13px; height: 13px; }
+    .icon-large { width: 20px; height: 20px; }
+    .fill { fill: currentColor; }
+    .shell { min-height: 100vh; }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      border-bottom: 1px solid var(--border);
+      background: color-mix(in oklch, var(--background) 90%, transparent);
+      backdrop-filter: blur(12px);
+    }
+    .header-inner {
+      max-width: 1152px;
+      margin: 0 auto;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand {
+      appearance: none;
+      border: 0;
+      background: transparent;
+      padding: 0;
+      cursor: pointer;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      text-align: left;
+    }
+    .brand-name { font-family: var(--font-display); font-size: 28px; letter-spacing: -0.02em; }
+    .brand-tag { color: var(--spotlight); font-size: 11px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; }
+    .controls-trigger {
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      background: var(--surface);
+      color: var(--muted-foreground);
+      padding: 7px 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      transition: border-color 160ms, color 160ms;
+    }
+    .controls-trigger:hover { border-color: color-mix(in oklch, var(--spotlight) 50%, transparent); color: var(--foreground); }
+    .controls-trigger .icon { color: var(--spotlight); }
+    .event-count { border-radius: 4px; background: var(--surface-elevated); color: var(--foreground); padding: 2px 6px; font-size: 10px; }
+
+    main { max-width: 1152px; margin: 0 auto; padding: 24px 24px 64px; }
+    .detail-main, .playing-main { max-width: 896px; }
+    .spotlight-section { margin-bottom: 48px; }
+    .section-heading { margin-bottom: 16px; display: flex; flex-direction: column; gap: 4px; }
+    .eyebrow { margin: 0; color: var(--spotlight); font-size: 12px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; }
+    h1, h2, p { margin-top: 0; }
+    .spotlight-title { margin: 4px 0; font-family: var(--font-display); font-size: clamp(40px, 5vw, 52px); font-weight: 400; line-height: 1.04; letter-spacing: -0.025em; }
+    .byline { margin: 0; color: var(--muted-foreground); font-size: 14px; }
+    .rail-meta { margin: 8px 0 0; color: var(--muted-foreground); font-size: 12px; }
+    .rail { display: flex; gap: 16px; overflow-x: auto; padding: 2px 2px 12px; scrollbar-width: none; }
+    .rail::-webkit-scrollbar { display: none; }
+
+    .pick-card {
+      position: relative;
+      width: 248px;
+      flex: 0 0 248px;
+      padding: 0;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      background: var(--card);
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      transition: transform 180ms, border-color 180ms;
+    }
+    .pick-card:hover { transform: translateY(-2px); border-color: color-mix(in oklch, var(--spotlight) 60%, transparent); }
+    .pick-art { aspect-ratio: 16 / 10; padding: 14px; display: flex; flex-direction: column; justify-content: space-between; }
+    .art-top, .art-bottom { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .art-bottom { align-items: flex-end; }
+    .number-badge { border-radius: 4px; padding: 3px 8px; background: color-mix(in oklch, var(--background) 72%, transparent); font-size: 11px; font-weight: 500; letter-spacing: 0.08em; backdrop-filter: blur(5px); }
+    .gem-badge { display: inline-flex; align-items: center; gap: 4px; border-radius: 4px; background: var(--spotlight); color: var(--spotlight-foreground); padding: 3px 8px; font-size: 11px; font-weight: 700; }
+    .motif { color: color-mix(in oklch, var(--foreground) 78%, transparent); font-size: 10px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; }
+    .play-disc { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 999px; background: color-mix(in oklch, var(--background) 82%, transparent); transition: transform 180ms, background 180ms, color 180ms; }
+    .pick-card:hover .play-disc { transform: scale(1.06); background: var(--spotlight); color: var(--spotlight-foreground); }
+    .pick-info { flex: 1; padding: 14px; display: flex; flex-direction: column; justify-content: space-between; }
+    .pick-title { margin: 0; font-family: var(--font-display); font-size: 27px; font-weight: 400; line-height: 1.05; transition: color 180ms; }
+    .pick-card:hover .pick-title { color: var(--spotlight); }
+    .pick-meta { margin: 6px 0 0; color: var(--muted-foreground); font-size: 12px; }
+    .picked-by { margin: 14px 0 0; padding-top: 10px; border-top: 1px solid var(--border); color: color-mix(in oklch, var(--foreground) 86%, transparent); font-size: 12px; }
+    .picked-by strong { color: var(--foreground); }
+
+    .standard-rows { display: grid; gap: 36px; }
+    .standard-rows > section { min-width: 0; }
+    .row-title { margin: 0 0 12px; font-size: 18px; letter-spacing: -0.02em; }
+    .standard-rail { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: none; }
+    .standard-rail::-webkit-scrollbar { display: none; }
+    .standard-card { width: 208px; flex: 0 0 208px; overflow: hidden; border: 1px solid var(--border); border-radius: 9px; background: var(--surface); }
+    .standard-art { position: relative; aspect-ratio: 16 / 9; padding: 12px; display: flex; align-items: flex-end; }
+    .standard-art span { position: relative; z-index: 1; font-size: 12px; font-weight: 500; text-shadow: 0 1px 10px var(--background); }
+    .standard-meta { padding: 8px 12px; color: var(--muted-foreground); font-size: 12px; }
+    .progress-track { position: absolute; inset: auto 0 0; height: 4px; background: color-mix(in oklch, var(--background) 60%, transparent); }
+    .progress-value { height: 100%; background: var(--spotlight); }
+
+    .back-button { margin-bottom: 24px; padding: 0; border: 0; background: transparent; color: var(--muted-foreground); cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; }
+    .back-button:hover { color: var(--foreground); }
+    .detail-card, .playing-card { overflow: hidden; border: 1px solid var(--border); border-radius: 18px; background: var(--card); }
+    .detail-art { aspect-ratio: 2 / 1; min-height: 280px; padding: 32px; display: flex; flex-direction: column; justify-content: space-between; }
+    .detail-label { font-size: 12px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; }
+    .detail-title { margin: 6px 0 0; font-family: var(--font-display); font-size: clamp(46px, 7vw, 66px); font-weight: 400; line-height: 1; }
+    .detail-meta { margin: 10px 0 0; color: color-mix(in oklch, var(--foreground) 82%, transparent); font-size: 14px; }
+    .detail-body { padding: 32px; }
+    .curator-note { padding: 20px; border: 1px solid var(--border); border-radius: 13px; background: var(--surface); }
+    blockquote { margin: 10px 0 0; font-size: 18px; line-height: 1.65; }
+    .actions { margin-top: 24px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+    .primary-button, .secondary-button, .soft-button {
+      border-radius: 9px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      font-weight: 600;
+      transition: opacity 160ms, background 160ms, border-color 160ms;
+    }
+    .primary-button { border: 1px solid var(--spotlight); background: var(--spotlight); color: var(--spotlight-foreground); padding: 14px 24px; font-size: 16px; }
+    .primary-button:hover { opacity: 0.9; }
+    .secondary-button { border: 1px solid var(--border); background: var(--secondary); padding: 14px 20px; font-size: 14px; }
+    .secondary-button:hover { background: var(--accent); }
+    .soft-button { border: 1px solid color-mix(in oklch, var(--foreground) 20%, transparent); background: color-mix(in oklch, var(--background) 76%, transparent); padding: 9px 16px; font-size: 12px; backdrop-filter: blur(6px); }
+    .soft-button:hover { background: var(--background); }
+    .soft-button:disabled { opacity: 0.6; }
+    .soft-button .icon { color: var(--spotlight); }
+    .soft-button.primary-soft { border-color: var(--spotlight); background: var(--spotlight); color: var(--spotlight-foreground); }
+    .soft-button.primary-soft .icon { color: inherit; }
+
+    .playing-art { aspect-ratio: 16 / 9; min-height: 340px; padding: 32px 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+    .playing-status { border: 1px solid color-mix(in oklch, var(--foreground) 20%, transparent); border-radius: 999px; background: color-mix(in oklch, var(--background) 76%, transparent); color: var(--spotlight); padding: 6px 14px; font-size: 12px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; backdrop-filter: blur(6px); }
+    .playing-title { margin: 18px 0 0; font-family: var(--font-display); font-size: clamp(42px, 6vw, 54px); font-weight: 400; line-height: 1.05; }
+    .playing-actions { margin-top: 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px; }
+    .finished-copy { max-width: 448px; margin: 18px auto 0; color: color-mix(in oklch, var(--foreground) 86%, transparent); font-size: 14px; line-height: 1.6; }
+    .next-area { padding: 28px 32px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .next-title { margin: 5px 0; font-family: var(--font-display); font-size: 28px; font-weight: 400; }
+    .next-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 10px; }
+    .next-actions .primary-button, .next-actions .secondary-button { padding: 10px 18px; font-size: 14px; }
+
+    .pilot-panel {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 50;
+      width: min(384px, calc(100vw - 32px));
+      max-height: calc(100vh - 32px);
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      background: var(--popover);
+      padding: 16px;
+      box-shadow: 0 24px 70px oklch(0 0 0 / 45%);
+    }
+    .pilot-panel[hidden] { display: none; }
+    .panel-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+    .panel-subtitle { margin: 3px 0 0; color: var(--muted-foreground); font-size: 12px; }
+    .icon-button { padding: 5px; border: 0; border-radius: 5px; background: transparent; color: var(--muted-foreground); cursor: pointer; }
+    .icon-button:hover { background: var(--accent); color: var(--foreground); }
+    .panel-body { margin-top: 14px; display: grid; gap: 17px; }
+    .holdout-row { padding: 11px 12px; border: 1px solid var(--border); border-radius: 9px; background: var(--surface); display: flex; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; }
+    .control-label { display: block; font-size: 12px; font-weight: 600; }
+    .control-help { display: block; margin-top: 2px; color: var(--muted-foreground); font-size: 11px; }
+    .holdout-row input { width: 17px; height: 17px; accent-color: var(--spotlight); cursor: pointer; }
+    .preset-label { margin: 0 0 8px; font-size: 12px; font-weight: 500; }
+    .preset-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    .preset-button { min-height: 34px; padding: 6px; border: 1px solid var(--border); border-radius: 7px; background: var(--surface); font-size: 11px; font-weight: 500; cursor: pointer; }
+    .preset-button:hover, .preset-button.active { border-color: color-mix(in oklch, var(--spotlight) 65%, transparent); }
+    .rail-status { margin: 7px 0 0; color: var(--muted-foreground); font-size: 11px; line-height: 1.5; }
+    .rail-status strong { color: var(--foreground); font-weight: 500; }
+    .event-header { margin-bottom: 7px; display: flex; align-items: center; justify-content: space-between; }
+    .event-header p { margin: 0; font-size: 12px; font-weight: 500; }
+    .clear-button { padding: 0; border: 0; background: transparent; color: var(--muted-foreground); font-size: 11px; cursor: pointer; }
+    .clear-button:hover { color: var(--foreground); }
+    .event-log { max-height: 144px; overflow-y: auto; padding: 8px; border: 1px solid var(--border); border-radius: 9px; background: var(--surface); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 11px; }
+    .empty-events { margin: 0; color: var(--muted-foreground); }
+    .event-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 2px 0; }
+    .event-description { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .event-type { color: var(--spotlight); }
+    .event-time { flex: 0 0 auto; color: var(--muted-foreground); font-size: 10px; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+
+    @media (min-width: 640px) {
+      .section-heading { flex-direction: row; align-items: flex-end; justify-content: space-between; }
+      .rail-meta { text-align: right; }
+    }
+    @media (max-width: 760px) {
+      .next-area { align-items: flex-start; flex-direction: column; }
+      .next-actions { justify-content: flex-start; }
+    }
+    @media (max-width: 639px) {
+      .header-inner { padding: 12px 16px; }
+      main { padding: 20px 16px 48px; }
+      .brand-tag { display: none; }
+      .controls-trigger { padding: 7px 9px; }
+      .pick-card { width: 220px; flex-basis: 220px; }
+      .standard-card { width: 184px; flex-basis: 184px; }
+      .detail-art { min-height: 300px; aspect-ratio: auto; padding: 22px; }
+      .detail-body { padding: 20px; }
+      .curator-note { padding: 16px; }
+      blockquote { font-size: 16px; }
+      .playing-art { min-height: 390px; aspect-ratio: auto; }
+      .next-area { padding: 22px; }
+      .primary-button, .secondary-button { padding: 12px 17px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="site-header">
+      <div class="header-inner">
+        <button class="brand" type="button" data-action="home" aria-label="StreamLine Spotlight home">
+          <span class="brand-name">StreamLine</span>
+          <span class="brand-tag">Spotlight</span>
+        </button>
+        <button class="controls-trigger" id="controls-trigger" type="button" aria-expanded="false" aria-controls="pilot-panel">
+          <svg class="icon icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="21" x2="14" y1="4" y2="4"/><line x1="10" x2="3" y1="4" y2="4"/><line x1="21" x2="12" y1="12" y2="12"/><line x1="8" x2="3" y1="12" y2="12"/><line x1="21" x2="16" y1="20" y2="20"/><line x1="12" x2="3" y1="20" y2="20"/><line x1="14" x2="14" y1="2" y2="6"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="16" x2="16" y1="18" y2="22"/></svg>
+          Pilot Controls
+          <span class="event-count" id="event-count">0</span>
+        </button>
+      </div>
+    </header>
+
+    <div id="screen"></div>
+
+    <aside class="pilot-panel" id="pilot-panel" role="dialog" aria-label="Pilot Controls" hidden>
+      <div class="panel-header">
+        <div>
+          <p class="eyebrow">Pilot Controls</p>
+          <p class="panel-subtitle">Test holdout, config rules &amp; event logging</p>
+        </div>
+        <button class="icon-button" type="button" data-action="close-controls" aria-label="Close Pilot Controls">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="panel-body">
+        <label class="holdout-row">
+          <span>
+            <span class="control-label">Holdout Group</span>
+            <span class="control-help">Hides Spotlight rail completely</span>
+          </span>
+          <input id="holdout-toggle" type="checkbox" aria-label="Holdout Group">
+        </label>
+        <div>
+          <p class="preset-label" id="config-label">Curator Config</p>
+          <div class="preset-grid">
+            <button class="preset-button" type="button" data-preset="default">6 Picks</button>
+            <button class="preset-button" type="button" data-preset="under-five">4 Picks (Hide)</button>
+            <button class="preset-button" type="button" data-preset="edge-cases">Dup + Invalid</button>
+          </div>
+          <p class="rail-status" id="rail-status"></p>
+        </div>
+        <div>
+          <div class="event-header">
+            <p id="event-label">Logged Events (0)</p>
+            <button class="clear-button" id="clear-events" type="button" data-action="clear-events">Clear</button>
+          </div>
+          <div class="event-log" id="event-log" aria-live="polite"></div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const INITIAL_CONFIG = {
+        railTitle: "This week's picks",
+        refreshDate: "Updated Nov 24",
+        curatorByline: "Curated by Maya Lin, David Okafor & Elena Rostova",
+        picks: [
+          { id: "harbor-lights", title: "Harbor Lights", year: 2023, runtime: "1h 48m", genre: "Drama", curatorName: "Maya Lin", curatorNote: "A quiet, luminous portrait of two ferry workers who find an unexpected second act on a foggy winter route.", artwork: { palette: "linear-gradient(145deg, oklch(0.28 0.06 235), oklch(0.16 0.03 255) 60%, oklch(0.42 0.1 65))", motif: "FERRY · NIGHT" }, hiddenGem: true },
+          { id: "the-glass-conservatory", title: "The Glass Conservatory", year: 2024, runtime: "2h 04m", genre: "Mystery", curatorName: "David Okafor", curatorNote: "Sharp, unhurried architectural mystery with a finale that rewards every minute of attention.", artwork: { palette: "linear-gradient(145deg, oklch(0.26 0.05 165), oklch(0.15 0.025 190) 65%, oklch(0.35 0.08 150))", motif: "BOTANICAL · NOIR" } },
+          { id: "sunday-in-naples", title: "Sunday in Naples", year: 2022, runtime: "1h 36m", genre: "Comedy-Drama", curatorName: "Elena Rostova", curatorNote: "Warm, chaotic, and genuinely funny—the kind of family dinner film you immediately want to recommend.", artwork: { palette: "linear-gradient(145deg, oklch(0.38 0.11 42), oklch(0.2 0.05 28) 65%, oklch(0.5 0.12 72))", motif: "COASTAL · WARM" }, hiddenGem: true },
+          { id: "signal-to-noise", title: "Signal to Noise", year: 2024, runtime: "1h 52m", genre: "Thriller", curatorName: "Maya Lin", curatorNote: "A taut 1970s radio-station thriller built on crackling sound design instead of cheap jump scares.", artwork: { palette: "linear-gradient(145deg, oklch(0.32 0.09 22), oklch(0.15 0.02 260) 65%, oklch(0.26 0.04 280))", motif: "ANALOG · 1974" } },
+          { id: "paper-cranes-at-noon", title: "Paper Cranes at Noon", year: 2021, runtime: "1h 41m", genre: "Documentary", curatorName: "David Okafor", curatorNote: "Follows a retired bookbinder in Kyoto; deeply calming and visually breathtaking from start to finish.", artwork: { palette: "linear-gradient(145deg, oklch(0.34 0.06 85), oklch(0.19 0.03 70) 65%, oklch(0.45 0.09 55))", motif: "KYOTO · CRAFT" }, hiddenGem: true },
+          { id: "last-train-north", title: "Last Train North", year: 2023, runtime: "1h 58m", genre: "Sci-Fi Drama", curatorName: "Elena Rostova", curatorNote: "Intimate, human-scale sci-fi set aboard a sleeper train crossing a frozen continent.", artwork: { palette: "linear-gradient(145deg, oklch(0.27 0.06 255), oklch(0.14 0.02 265) 60%, oklch(0.36 0.07 215))", motif: "SLEEPER · ARCTIC" } }
+        ]
+      };
+
+      const HOMEPAGE_ROWS = [
+        { id: "continue-watching", title: "Continue Watching", items: [
+          { title: "Meridian Station", year: 2024, runtime: "42m left", palette: "linear-gradient(135deg, oklch(0.26 0.04 240), oklch(0.17 0.02 260))", progress: 64 },
+          { title: "The Salt Merchants", year: 2023, runtime: "1h 12m left", palette: "linear-gradient(135deg, oklch(0.3 0.05 60), oklch(0.18 0.02 45))", progress: 35 },
+          { title: "Cold Front", year: 2022, runtime: "19m left", palette: "linear-gradient(135deg, oklch(0.25 0.04 205), oklch(0.16 0.02 225))", progress: 82 },
+          { title: "After the Encore", year: 2024, runtime: "55m left", palette: "linear-gradient(135deg, oklch(0.29 0.06 15), oklch(0.17 0.02 350))", progress: 48 }
+        ] },
+        { id: "trending", title: "Trending on StreamLine", items: [
+          { title: "Redline Protocol", year: 2025, runtime: "2h 11m", palette: "linear-gradient(135deg, oklch(0.31 0.08 25), oklch(0.16 0.02 260))" },
+          { title: "Oceans of Glass", year: 2024, runtime: "1h 54m", palette: "linear-gradient(135deg, oklch(0.27 0.06 215), oklch(0.15 0.02 245))" },
+          { title: "The Fifth Witness", year: 2025, runtime: "2h 02m", palette: "linear-gradient(135deg, oklch(0.25 0.03 275), oklch(0.15 0.02 260))" },
+          { title: "Golden Hour", year: 2024, runtime: "1h 45m", palette: "linear-gradient(135deg, oklch(0.36 0.09 70), oklch(0.18 0.03 50))" },
+          { title: "Vesper", year: 2023, runtime: "1h 58m", palette: "linear-gradient(135deg, oklch(0.26 0.05 170), oklch(0.16 0.02 195))" }
+        ] },
+        { id: "award-winners", title: "Award Winners", items: [
+          { title: "Winter's Architecture", year: 2023, runtime: "2h 18m", palette: "linear-gradient(135deg, oklch(0.26 0.03 250), oklch(0.16 0.02 260))" },
+          { title: "The Violin Maker", year: 2022, runtime: "1h 50m", palette: "linear-gradient(135deg, oklch(0.32 0.07 48), oklch(0.17 0.03 35))" },
+          { title: "Quiet Waters", year: 2024, runtime: "1h 44m", palette: "linear-gradient(135deg, oklch(0.28 0.05 190), oklch(0.16 0.02 210))" },
+          { title: "Nocturne in B", year: 2021, runtime: "2h 06m", palette: "linear-gradient(135deg, oklch(0.24 0.04 285), oklch(0.14 0.02 265))" }
+        ] }
+      ];
+
+      const state = {
+        config: structuredClone(INITIAL_CONFIG),
+        isHoldout: false,
+        screen: { name: "home" },
+        controlsOpen: false,
+        events: [],
+        impressionLogged: false,
+        activePreset: "default"
+      };
+
+      const screenEl = document.getElementById("screen");
+      const panelEl = document.getElementById("pilot-panel");
+      const triggerEl = document.getElementById("controls-trigger");
+      const holdoutEl = document.getElementById("holdout-toggle");
+
+      const icons = {
+        play: (extra = "") => `<svg class="icon ${extra}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon class="fill" points="6 3 20 12 6 21 6 3"/></svg>`,
+        sparkles: () => `<svg class="icon icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m12 3-1.9 5.1L5 10l5.1 1.9L12 17l1.9-5.1L19 10l-5.1-1.9L12 3Z"/><path d="M5 3v4M3 5h4M19 17v4M17 19h4"/></svg>`,
+        back: () => `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m12 19-7-7 7-7M19 12H5"/></svg>`,
+        clock: () => `<svg class="icon icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>`,
+        check: () => `<svg class="icon icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></svg>`
+      };
+
+      function escapeHtml(value) {
+        return String(value).replace(/[&<>'"]/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" })[char]);
+      }
+
+      function resolveRail() {
+        if (state.isHoldout) return { visible: false, picks: [], reason: "holdout", skippedCount: 0, dedupedCount: 0 };
+        const seen = new Set();
+        const picks = [];
+        let skippedCount = 0;
+        let dedupedCount = 0;
+        for (const pick of state.config.picks) {
+          if (!pick.artwork?.palette || !pick.curatorName.trim()) { skippedCount++; continue; }
+          if (seen.has(pick.id)) { dedupedCount++; continue; }
+          seen.add(pick.id);
+          picks.push(pick);
+          if (picks.length === 8) break;
+        }
+        if (picks.length < 5) return { visible: false, picks: [], reason: "insufficient_titles", skippedCount, dedupedCount };
+        return { visible: true, picks, reason: "ok", skippedCount, dedupedCount };
+      }
+
+      function logEvent(type, pick) {
+        const now = new Date();
+        state.events.unshift({
+          id: `${type}-${now.getTime()}-${state.events.length}`,
+          type,
+          timestamp: now.toTimeString().slice(0, 8),
+          ...(pick ? { pickId: pick.id, pickTitle: pick.title, curatorName: pick.curatorName } : {})
+        });
+      }
+
+      function getNextPick(picks, currentId) {
+        if (!picks.length) return undefined;
+        const index = picks.findIndex(pick => pick.id === currentId);
+        return index === -1 ? picks[0] : picks[(index + 1) % picks.length];
+      }
+
+      function gemBadge() {
+        return `<span class="gem-badge">${icons.sparkles()}Hidden Gem</span>`;
+      }
+
+      function renderHome(rail) {
+        const spotlight = rail.visible ? `
+          <section class="spotlight-section" aria-labelledby="spotlight-heading">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Spotlight · ${escapeHtml(state.config.refreshDate)}</p>
+                <h1 class="spotlight-title" id="spotlight-heading">${escapeHtml(state.config.railTitle)}</h1>
+                <p class="byline">${escapeHtml(state.config.curatorByline)}</p>
+              </div>
+              <p class="rail-meta">${rail.picks.length} hand-picked films · Tap any pick to play</p>
+            </div>
+            <div class="rail" aria-label="This week's Spotlight picks">
+              ${rail.picks.map((pick, index) => `
+                <button class="pick-card" type="button" data-pick-id="${escapeHtml(pick.id)}" aria-label="View ${escapeHtml(pick.title)}, picked by ${escapeHtml(pick.curatorName)}">
+                  <div class="pick-art" style="background:${pick.artwork.palette}">
+                    <div class="art-top">
+                      <span class="number-badge">${String(index + 1).padStart(2, "0")}</span>
+                      ${pick.hiddenGem ? gemBadge() : ""}
+                    </div>
+                    <div class="art-bottom">
+                      <span class="motif">${escapeHtml(pick.artwork.motif)}</span>
+                      <span class="play-disc">${icons.play("icon-small")}</span>
+                    </div>
+                  </div>
+                  <div class="pick-info">
+                    <div>
+                      <h2 class="pick-title">${escapeHtml(pick.title)}</h2>
+                      <p class="pick-meta">${pick.year} · ${escapeHtml(pick.runtime)} · ${escapeHtml(pick.genre)}</p>
+                    </div>
+                    <p class="picked-by">Picked by <strong>${escapeHtml(pick.curatorName)}</strong></p>
+                  </div>
+                </button>`).join("")}
+            </div>
+          </section>` : "";
+
+        const rows = HOMEPAGE_ROWS.map(row => `
+          <section aria-labelledby="row-${row.id}">
+            <h2 class="row-title" id="row-${row.id}">${escapeHtml(row.title)}</h2>
+            <div class="standard-rail">
+              ${row.items.map(item => `
+                <article class="standard-card">
+                  <div class="standard-art" style="background:${item.palette}">
+                    <span>${escapeHtml(item.title)}</span>
+                    ${typeof item.progress === "number" ? `<div class="progress-track"><div class="progress-value" style="width:${item.progress}%"></div></div>` : ""}
+                  </div>
+                  <div class="standard-meta">${item.year} · ${escapeHtml(item.runtime)}</div>
+                </article>`).join("")}
+            </div>
+          </section>`).join("");
+
+        return `<main>${spotlight}<div class="standard-rows">${rows}</div></main>`;
+      }
+
+      function renderDetail(pick) {
+        return `<main class="detail-main">
+          <button class="back-button" type="button" data-action="home">${icons.back()}Back to Spotlight</button>
+          <article class="detail-card">
+            <div class="detail-art" style="background:${pick.artwork.palette}">
+              <div class="art-top">
+                <span class="detail-label">Spotlight Pick</span>
+                ${pick.hiddenGem ? gemBadge() : ""}
+              </div>
+              <div>
+                <p class="motif">${escapeHtml(pick.artwork.motif)}</p>
+                <h1 class="detail-title">${escapeHtml(pick.title)}</h1>
+                <p class="detail-meta">${pick.year} · ${escapeHtml(pick.runtime)} · ${escapeHtml(pick.genre)}</p>
+              </div>
+            </div>
+            <div class="detail-body">
+              <div class="curator-note">
+                <p class="eyebrow">Picked by ${escapeHtml(pick.curatorName)}</p>
+                <blockquote>“${escapeHtml(pick.curatorNote)}”</blockquote>
+              </div>
+              <div class="actions">
+                <button class="primary-button" type="button" data-action="play">${icons.play("icon-large")}Play now</button>
+                <button class="secondary-button" type="button" data-action="home">Choose another pick</button>
+              </div>
+            </div>
+          </article>
+        </main>`;
+      }
+
+      function renderPlaying(rail) {
+        const { pick, finished, session30mLogged } = state.screen;
+        const next = getNextPick(rail.picks, pick.id);
+        return `<main class="playing-main">
+          <button class="back-button" type="button" data-action="home">${icons.back()}Return to Spotlight</button>
+          <section class="playing-card">
+            <div class="playing-art" style="background:${pick.artwork.palette}">
+              <div class="playing-status">${finished ? "Finished watching" : "Now playing"}</div>
+              <h1 class="playing-title">${escapeHtml(pick.title)}</h1>
+              <p class="detail-meta">Picked by ${escapeHtml(pick.curatorName)} · ${escapeHtml(pick.runtime)}</p>
+              ${!finished ? `<div class="playing-actions">
+                <button class="soft-button" type="button" data-action="log-session" ${session30mLogged ? "disabled" : ""}>${icons.clock()}${session30mLogged ? "30+ min session logged" : "Simulate 30+ min watched"}</button>
+                <button class="soft-button primary-soft" type="button" data-action="finish">${icons.check()}Finish film</button>
+              </div>` : `<p class="finished-copy">Playback complete. Ready for your next curated pick?</p>`}
+            </div>
+            <div class="next-area">
+              ${next ? `<div>
+                <p class="eyebrow">${finished ? "Up next in Spotlight" : "Next in this week's picks"}</p>
+                <h2 class="next-title">${escapeHtml(next.title)}</h2>
+                <p class="pick-meta">Picked by ${escapeHtml(next.curatorName)} · ${escapeHtml(next.runtime)}</p>
+              </div>` : "<div></div>"}
+              <div class="next-actions">
+                ${next ? `<button class="primary-button" type="button" data-next-id="${escapeHtml(next.id)}">${icons.play()}${finished ? `Watch ${escapeHtml(next.title)}` : "View next pick"}</button>` : ""}
+                <button class="secondary-button" type="button" data-action="home">Back to Spotlight</button>
+              </div>
+            </div>
+          </section>
+        </main>`;
+      }
+
+      function renderControls(rail) {
+        triggerEl.setAttribute("aria-expanded", String(state.controlsOpen));
+        panelEl.hidden = !state.controlsOpen;
+        holdoutEl.checked = state.isHoldout;
+        document.getElementById("event-count").textContent = state.events.length;
+        document.getElementById("event-label").textContent = `Logged Events (${state.events.length})`;
+        document.getElementById("config-label").textContent = `Curator Config (${state.config.picks.length} raw → ${rail.picks.length} shown)`;
+        document.getElementById("clear-events").hidden = state.events.length === 0;
+        document.querySelectorAll("[data-preset]").forEach(button => {
+          button.classList.toggle("active", button.dataset.preset === state.activePreset);
+          button.setAttribute("aria-pressed", String(button.dataset.preset === state.activePreset));
+        });
+        const details = `${rail.picks.length} picks${rail.dedupedCount ? `, ${rail.dedupedCount} deduped` : ""}${rail.skippedCount ? `, ${rail.skippedCount} skipped` : ""}`;
+        document.getElementById("rail-status").innerHTML = `Status: <strong>${rail.visible ? `Visible (${details})` : `Hidden (${rail.reason})`}</strong>`;
+        document.getElementById("event-log").innerHTML = state.events.length === 0
+          ? `<p class="empty-events">No events yet.</p>`
+          : state.events.map(event => `<div class="event-row">
+              <span class="event-description"><span class="event-type">${escapeHtml(event.type)}</span>${event.pickTitle ? ` · ${escapeHtml(event.pickTitle)}` : ""}</span>
+              <span class="event-time">${escapeHtml(event.timestamp)}</span>
+            </div>`).join("");
+      }
+
+      function render() {
+        const rail = resolveRail();
+        if (state.screen.name === "home" && rail.visible && !state.impressionLogged) {
+          state.impressionLogged = true;
+          logEvent("rail_impression");
+        }
+        if (!rail.visible) state.impressionLogged = false;
+
+        if (state.screen.name === "detail") screenEl.innerHTML = renderDetail(state.screen.pick);
+        else if (state.screen.name === "playing") screenEl.innerHTML = renderPlaying(rail);
+        else screenEl.innerHTML = renderHome(rail);
+        renderControls(rail);
+      }
+
+      function goHome() {
+        state.screen = { name: "home" };
+        render();
+        window.scrollTo(0, 0);
+      }
+
+      function selectPick(pick) {
+        if (!pick) return;
+        logEvent("pick_click", pick);
+        state.screen = { name: "detail", pick };
+        render();
+        window.scrollTo(0, 0);
+      }
+
+      document.addEventListener("click", event => {
+        const pickButton = event.target.closest("[data-pick-id]");
+        if (pickButton) {
+          const pick = resolveRail().picks.find(item => item.id === pickButton.dataset.pickId);
+          selectPick(pick);
+          return;
+        }
+
+        const nextButton = event.target.closest("[data-next-id]");
+        if (nextButton) {
+          const pick = resolveRail().picks.find(item => item.id === nextButton.dataset.nextId);
+          selectPick(pick);
+          return;
+        }
+
+        const presetButton = event.target.closest("[data-preset]");
+        if (presetButton) {
+          const preset = presetButton.dataset.preset;
+          state.activePreset = preset;
+          state.config = structuredClone(INITIAL_CONFIG);
+          if (preset === "under-five") state.config.picks = state.config.picks.slice(0, 4);
+          if (preset === "edge-cases") {
+            const first = structuredClone(state.config.picks[0]);
+            state.config.picks.push(structuredClone(first));
+            state.config.picks.push({ ...structuredClone(first), id: "missing-curator-test", title: "Unattributed Film", curatorName: "" });
+          }
+          render();
+          return;
+        }
+
+        const actionButton = event.target.closest("[data-action]");
+        if (!actionButton) return;
+        const action = actionButton.dataset.action;
+        if (action === "home") goHome();
+        if (action === "play" && state.screen.name === "detail") {
+          const pick = state.screen.pick;
+          logEvent("play_start", pick);
+          state.screen = { name: "playing", pick, finished: false, session30mLogged: false };
+          render();
+          window.scrollTo(0, 0);
+        }
+        if (action === "log-session" && state.screen.name === "playing" && !state.screen.session30mLogged) {
+          logEvent("session_30m_plus", state.screen.pick);
+          state.screen.session30mLogged = true;
+          render();
+        }
+        if (action === "finish" && state.screen.name === "playing") {
+          state.screen.finished = true;
+          render();
+        }
+        if (action === "close-controls") {
+          state.controlsOpen = false;
+          renderControls(resolveRail());
+          triggerEl.focus();
+        }
+        if (action === "clear-events") {
+          state.events = [];
+          renderControls(resolveRail());
+        }
+      });
+
+      triggerEl.addEventListener("click", () => {
+        state.controlsOpen = !state.controlsOpen;
+        renderControls(resolveRail());
+      });
+
+      holdoutEl.addEventListener("change", () => {
+        state.isHoldout = holdoutEl.checked;
+        render();
+      });
+
+      document.addEventListener("keydown", event => {
+        if (event.key === "Escape" && state.controlsOpen) {
+          state.controlsOpen = false;
+          renderControls(resolveRail());
+          triggerEl.focus();
+        }
+      });
+
+      render();
+    })();
+  </script>
+</body>
+</html>

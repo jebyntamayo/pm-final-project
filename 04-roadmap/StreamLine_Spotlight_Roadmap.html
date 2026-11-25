@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>StreamLine Spotlight · Roadmap</title>
+<style>
+  :root{
+    --bg:#0f1014; --panel:#17181f; --card:#1e2029; --line:#2b2d38; --text:#f2f2f5; --muted:#9a9cab;
+    --accent:#e50914;
+    --qw:#22c08a; --mp:#4c8dff; --fi:#f5b83d; --ts:#ef5b6b;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.45;padding:32px 28px 48px}
+  .wrap{max-width:1180px;margin:0 auto}
+  header{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+  .brand{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  h1{font-size:30px;letter-spacing:-.02em;margin-top:4px}
+  h1 span{color:var(--accent)}
+  .team{font-size:13px;color:var(--muted);background:var(--panel);border:1px solid var(--line);padding:7px 12px;border-radius:999px}
+  .filters{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 22px;align-items:center}
+  .filters .lbl{font-size:12px;color:var(--muted);margin-right:4px}
+  .chip{font:inherit;font-size:12px;color:var(--text);background:var(--panel);border:1px solid var(--line);padding:6px 12px;border-radius:999px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:border-color .15s,background .15s}
+  .chip:hover{border-color:#464a5c}
+  .chip.active{background:#262938;border-color:#6b7090}
+  .dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+  .lanes{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  @media(max-width:860px){.lanes{grid-template-columns:1fr}}
+  .lane{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;min-height:220px}
+  .lane-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+  .lane-h h2{font-size:15px;letter-spacing:.08em}
+  .lane-h .count{font-size:12px;color:var(--muted)}
+  .lane-sub{font-size:12px;color:var(--muted);margin-bottom:14px}
+  .lane.now{border-top:3px solid var(--qw)}
+  .lane.next{border-top:3px solid var(--mp)}
+  .lane.later{border-top:3px solid var(--fi)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:13px 14px;margin-bottom:12px;cursor:pointer;transition:transform .12s,border-color .12s}
+  .card:hover{transform:translateY(-2px);border-color:#464a5c}
+  .card.hidden{display:none}
+  .card-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+  .id{font-size:11px;color:var(--muted);letter-spacing:.06em}
+  .name{font-size:15px;font-weight:600;margin-top:2px}
+  .badge{font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;white-space:nowrap;border:1px solid}
+  .b-qw{color:var(--qw);border-color:var(--qw);background:rgba(34,192,138,.1)}
+  .b-mp{color:var(--mp);border-color:var(--mp);background:rgba(76,141,255,.1)}
+  .b-fi{color:var(--fi);border-color:var(--fi);background:rgba(245,184,61,.1)}
+  .b-ts{color:var(--ts);border-color:var(--ts);background:rgba(239,91,107,.1)}
+  .why{font-size:13px;color:#c9cbd6;margin-top:9px;display:none}
+  .card.open .why{display:block}
+  .hint{font-size:11px;color:var(--muted);margin-top:8px}
+  .card.open .hint{display:none}
+  .empty{font-size:12px;color:var(--muted);padding:8px 2px;display:none}
+  .cut{margin-top:26px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;border-top:3px solid var(--ts)}
+  .cut-h{display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+  .cut-h h2{font-size:15px;letter-spacing:.08em}
+  .cut-h .tog{font-size:12px;color:var(--muted)}
+  .cut-sub{font-size:12px;color:var(--muted);margin:4px 0 14px}
+  .cut-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}
+  .cut.closed .cut-grid{display:none}
+  .cut .card{margin:0;opacity:.82}
+  .cut .name{text-decoration:line-through;text-decoration-color:rgba(239,91,107,.7)}
+  footer{margin-top:26px;font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;gap:16px}
+  footer span{display:inline-flex;align-items:center;gap:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <div class="brand">StreamLine · Product Roadmap</div>
+      <h1>Spotlight <span>Roadmap</span></h1>
+    </div>
+    <div class="team">Team: 2 engineers + 1 designer</div>
+  </header>
+
+  <div class="filters" id="filters">
+    <span class="lbl">Filter by quadrant:</span>
+    <button class="chip active" data-q="all">All</button>
+    <button class="chip" data-q="qw"><span class="dot" style="background:var(--qw)"></span>Quick Win</button>
+    <button class="chip" data-q="mp"><span class="dot" style="background:var(--mp)"></span>Major Project</button>
+    <button class="chip" data-q="fi"><span class="dot" style="background:var(--fi)"></span>Fill-In</button>
+    <button class="chip" data-q="ts"><span class="dot" style="background:var(--ts)"></span>Time Sinker</button>
+  </div>
+
+  <div class="lanes">
+    <section class="lane now">
+      <div class="lane-h"><h2>NOW</h2><span class="count"></span></div>
+      <div class="lane-sub">3-week sprint</div>
+      <div class="cards" id="now"></div>
+      <div class="empty">No items match this filter.</div>
+    </section>
+    <section class="lane next">
+      <div class="lane-h"><h2>NEXT</h2><span class="count"></span></div>
+      <div class="lane-sub">Following 1-2 sprints</div>
+      <div class="cards" id="next"></div>
+      <div class="empty">No items match this filter.</div>
+    </section>
+    <section class="lane later">
+      <div class="lane-h"><h2>LATER</h2><span class="count"></span></div>
+      <div class="lane-sub">Backlog</div>
+      <div class="cards" id="later"></div>
+      <div class="empty">No items match this filter.</div>
+    </section>
+  </div>
+
+  <section class="cut" id="cutBox">
+    <div class="cut-h" id="cutToggle"><h2>CUT LIST</h2><span class="tog" id="cutTog">Hide</span></div>
+    <div class="cut-sub">Deprioritised: not tied to the persona's core friction.</div>
+    <div class="cut-grid" id="cut"></div>
+  </section>
+
+  <footer>
+    <span><i class="dot" style="background:var(--qw)"></i>Quick Win</span>
+    <span><i class="dot" style="background:var(--mp)"></i>Major Project</span>
+    <span><i class="dot" style="background:var(--fi)"></i>Fill-In</span>
+    <span><i class="dot" style="background:var(--ts)"></i>Time Sinker</span>
+    <span>Click a card to show or hide its rationale.</span>
+  </footer>
+</div>
+
+<script>
+const Q = {
+  qw:{label:"Quick Win",cls:"b-qw"},
+  mp:{label:"Major Project",cls:"b-mp"},
+  fi:{label:"Fill-In",cls:"b-fi"},
+  ts:{label:"Time Sinker",cls:"b-ts"}
+};
+const items = [
+  {id:"A1",name:"Spotlight Curated Rail",q:"qw",lane:"now",why:"A human-picked shelf answers Tom's \"hand-picked\" need directly and targets the Month 1 retention metric."},
+  {id:"A6",name:"Spotlight Digest Email",q:"mp",lane:"next",why:"It copies the competitor's weekly email, so scope it to three editorial picks sent to everyone, which cuts effort to about 2."},
+  {id:"A3",name:"Hidden Gem Badge",q:"fi",lane:"later",why:"It's a cheap quality signal against the \"warehouse\" feel, so ship it as a tag inside A1."},
+  {id:"A2",name:"'Why You'll Love This' Label",q:"ts",lane:"cut",why:"It's an AI explanation, not a trusted human pick, and hover doesn't work on mobile."},
+  {id:"A4",name:"Mood-Based Entry Point",q:"ts",lane:"cut",why:"It adds a login step for a persona who wants less effort and risks Power Users' sessions."},
+  {id:"A5",name:"Personalized Spotlight Queue",q:"ts",lane:"cut",why:"It's another algorithm, and Wanderers give too little data, so revisit it only after A1 proves curation works."},
+  {id:"A7",name:"Curator Profiles",q:"ts",lane:"cut",why:"It builds trust over time, but a curator byline on A1 captures most of the value for now."},
+  {id:"A8",name:"Watch Party (Spotlight)",q:"ts",lane:"cut",why:"Social viewing has nothing to do with Tom's friction and moves none of our metrics."},
+  {id:"A9",name:"Advanced Filter Engine",q:"ts",lane:"cut",why:"Filters add more searching, the opposite of Tom's goal, and mainly serve Power Users."},
+  {id:"A10",name:"Offline Download (Spotlight)",q:"ts",lane:"cut",why:"Playback logistics aren't the problem and it does nothing for the \"nothing worth watching\" moment."}
+];
+
+function esc(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+
+function cardEl(it, open){
+  const d = document.createElement("div");
+  d.className = "card" + (open ? " open" : "");
+  d.dataset.q = it.q;
+  d.innerHTML =
+    '<div class="card-top"><div><div class="id">'+esc(it.id)+'</div><div class="name">'+esc(it.name)+'</div></div>'+
+    '<span class="badge '+Q[it.q].cls+'">'+Q[it.q].label+'</span></div>'+
+    '<div class="why">'+esc(it.why)+'</div>'+
+    '<div class="hint">Click for rationale</div>';
+  d.addEventListener("click",()=>d.classList.toggle("open"));
+  return d;
+}
+
+["now","next","later","cut"].forEach(lane=>{
+  const host = document.getElementById(lane);
+  items.filter(i=>i.lane===lane).forEach(i=>host.appendChild(cardEl(i, lane==="now")));
+});
+
+function applyFilter(q){
+  document.querySelectorAll(".card").forEach(c=>{
+    c.classList.toggle("hidden", q!=="all" && c.dataset.q!==q);
+  });
+  document.querySelectorAll(".lane").forEach(l=>{
+    const total = l.querySelectorAll(".card").length;
+    const shown = l.querySelectorAll(".card:not(.hidden)").length;
+    l.querySelector(".count").textContent = shown + (q==="all" ? "" : " of "+total) + (shown===1?" item":" items");
+    l.querySelector(".empty").style.display = shown===0 ? "block" : "none";
+  });
+}
+
+document.getElementById("filters").addEventListener("click",e=>{
+  const b = e.target.closest(".chip"); if(!b) return;
+  document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
+  b.classList.add("active");
+  applyFilter(b.dataset.q);
+});
+
+document.getElementById("cutToggle").addEventListener("click",()=>{
+  const box = document.getElementById("cutBox");
+  box.classList.toggle("closed");
+  document.getElementById("cutTog").textContent = box.classList.contains("closed") ? "Show" : "Hide";
+});
+
+applyFilter("all");
+</script>
+</body>
+</html>
